@@ -1,28 +1,29 @@
 <?php
-    require('verifco.php');
     require('functions.php');
+    require('verifco.php');
     
     if(isset($_GET) && !empty($_GET)) {
         if(isset($_GET['pass']) && !empty($_GET['pass'])) {
-            $hash = password_hash(htmlspecialchars($_GET['pass']));
+            $hash = password_hash(htmlspecialchars($_GET['pass']), PASSWORD_BCRYPT);
             
             if(!file_exists('password.txt')) {
                 $passfile = fopen("password.txt", "w");
                 fwrite($passfile, 'pass');
-                fclose($myfile);
+                fclose($passfile);
             }
-            
             $content = file_get_contents('password.txt');
+                
             if($content == 'pass') {
                 $passfile = fopen("password.txt", "w");
                 fwrite($passfile, $hash);
                 fclose($passfile);
                 
-                $_SESSION['connected'] = 'connected';
+                $_SESSION['connected'] = $hash;
+                redirect('this');
             }
             
-            if($content == $hash) {
-                $_SESSION['connected'] = 'connected';
+            if(password_verify(htmlspecialchars($_GET['pass']), $hash)) {
+                $_SESSION['connected'] = $hash;
                 redirect('this');
             }
         }

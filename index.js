@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 callback: function (data) {
                     if (data) {
                         console.log(data);
-                        window.location.search += '?pass=' + data.password
+                        window.location.search = '?pass=' + data.password
                     }
                 }
             })
