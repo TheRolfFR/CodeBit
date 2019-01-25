@@ -40,7 +40,7 @@ header #buttons {
     bottom: 0;
     text-align: center;
 }
-header #buttons > div {
+header #buttons > .button {
     height: 40px;
     width: 40px;
     border: 3px solid #0097A7;

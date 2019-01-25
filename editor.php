@@ -2,13 +2,15 @@
 require('functions.php');
 session_start();
 
-$html = "&lt!-- this is a comment --&gt";
+$html = "<!-- this is a comment -->";
 $css = "/* this is a comment */";
 $js = "// this is a comment";
 
 $title = "Untitled bit";
 $value = "Untitled";
 $class = "";
+
+$debug = false;
 
 if(!empty($_GET)) {
     if(isset($_GET['connect']) && !empty($_GET['connect'])) {
@@ -36,6 +38,8 @@ if(!empty($_GET)) {
             
             $file = file_get_contents('bits/' . $id . '/' . $id . '.json');
             $json = ($file) ? $file : "";
+            
+            $debug = $id;
             
             try {
                 $json = json_decode($json, true);
@@ -76,20 +80,22 @@ if(!empty($_GET)) {
                 by TheRolf
             </h2><span class="taille"></span>
             <div id="buttons" class="middle">
-                <div id="overlay">
+                <?php if($debug) { ?><a href="bits/<?= $debug ?>/debug.html" target="_blank" class="button">
+                    <i class="fas fa-external-link-alt"></i>
+                </a><?php } ?><div class="button" id="overlay">
                     <i class="far fa-window-maximize"></i>
                 </div>
-                <div id="save">
+                <div class="button" id="save">
                     <i class="fas fa-save"></i>
-                </div><div id="home">
+                </div><a class="button" id="home" href="index.php">
                     <i class="fas fa-home"></i>
-                </div><span class="taille"></span>
+                </a><span class="taille"></span>
             </div>
         </header>
         <div id="editors" class="top <?= $class ?>">
             <div class="editor">
                 <h4>HTML</h4>
-                <div id="html" class="aceeditor"><?= $html ?></div>
+                <div id="html" class="aceeditor"><?= htmlspecialchars($html) ?></div>
             </div><div class="editor">
                 <h4>CSS</h4>
                 <div id="css" class="aceeditor"><?= $css ?></div>

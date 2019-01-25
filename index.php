@@ -18,12 +18,12 @@
                 fwrite($passfile, $hash);
                 fclose($passfile);
                 
-                $_SESSION['connected'] = $hash;
+                $_SESSION['connected'] = $content;
                 redirect('this');
             }
             
             if(password_verify(htmlspecialchars($_GET['pass']), $hash)) {
-                $_SESSION['connected'] = $hash;
+                $_SESSION['connected'] = $content;
                 redirect('this');
             }
         }

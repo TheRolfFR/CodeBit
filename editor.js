@@ -154,6 +154,9 @@ const CodeBit = {
         postRequest('save.php', json, function(res, err){
             if(err) {
                 console.error(res);
+                Push.create('Error : ' + res.response, {
+                    body: 'Check console for more details.'
+                })
             } else {
                 if(res != "done") {
                     window.location.search = "?id=" + res;
