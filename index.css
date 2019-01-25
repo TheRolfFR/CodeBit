@@ -1,0 +1,97 @@
+@import url('https://therolf.fr/font/snowstorm.css');
+
+body {
+    text-align: center;
+    background: #0097a7;
+    color: white;
+    padding: 20px 0;
+}
+
+form #password {
+    margin: 20px 0;
+}
+
+form input {
+    height: 40px;
+    background: #00838F;
+    color: inherit;
+    transition: all .2s ease;
+    border: 0px none;
+    margin: 0 5px;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+form #password + input:hover {
+    background: #006972;
+}
+#bgDiagonal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #0097a7;
+	overflow: hidden;
+	z-index: -1;
+}
+#bgDiagonal div {
+	height: 80%;
+	width: 200%;
+	background: rgba(0,0,0,0.35);
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(-15deg);
+	-webkit-box-shadow: inset 0px 0px 5px 0px #000000;
+-moz-box-shadow: inset 0px 0px 5px 0px #000000;
+-o-box-shadow: inset 0px 0px 5px 0px #000000;
+box-shadow: inset 0px 0px 5px 0px #000000;
+filter:progid:DXImageTransform.Microsoft.Shadow(color=#000000, Direction=0, Strength=5);
+}
+#main {
+    background: rgba(0,0,0,0.3);
+    border-radius: 3px;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+min-height: 100%;
+    position: relative;
+}
+#main #bits {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+#title {
+    height: 60px;
+    text-align: left;
+    position: relative;
+}
+#title h2 {
+    font-family: "Snowstorm";
+    font-size: 2em;
+    margin-right: .25em;
+    margin-left: .5em;
+}
+#title .button {
+    float: right;
+    height: 40px;
+    width: 40px;
+    background: #0097a7;
+    border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+    margin: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background .2s ease;
+}
+#title .button:hover {
+    background: #00626d;
+}
+
+#create {
+    text-decoration: underline;
+}
