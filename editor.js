@@ -27,12 +27,72 @@ document.addEventListener('DOMContentLoaded', function(){
         }
         document.title = event.target.value
     })
-})
+    
+    document.getElementById('settings').addEventListener('click', function(){
+        vex.dialog.open({
+    message: 'Codebit options',
+    input: [
+        '<label for="stuffhead">Stuff for &lt;head&gt;</label>',
+        '<div>',
+            '<textarea id="stuffhead" rows="5" name="stuffhead" placeholder="e.g. <meta>, <link>, <script>">' + CodeBit.stuffhead + '</textarea>',
+        '</div>',
+        '<label for="externalcss">External JS</label>',
+        '<p class="note">Seperate with return character</p>',
+        '<div>',
+            '<textarea id="externaljs" rows="5" name="externaljs" placeholder="http://link.to/your.js">' + CodeBit.externaljs + '</textarea>',
+        '</div>',
+        '<label for="stuffhead">External CSS</label>',
+        '<p class="note">Seperate with return character</p>',
+        '<div>',
+            '<textarea id="externalcss" rows="5" name="externalcss" placeholder="http://link.to/your.css">' + CodeBit.externalcss + '</textarea>',
+        '</div>',
+    ].join(''),
+    callback: function (data) {
+        if (data) {
+            CodeBit.stuffhead = data.stuffhead || "";
+            CodeBit.externalcss = data.externalcss || "";
+            CodeBit.externaljs = data.externaljs || "";
+            
+            CodeBit.saveBit();
+        }
+        
+    }
+});
+    });
+});
+
+String.prototype.escapeHTML = function() {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return this.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+String.prototype.encodeHTML = function() {
+  var map = {
+    '&amp;' : '&',
+    '&lt;'  : '<',
+    '&gt;'  : '>',
+    '&quot;': '"',
+    '&#039;': "'"
+  };
+
+  return this.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
 
 const CodeBit = {
     htmleditor: undefined,
     csseditor: undefined,
     jseditor: undefined,
+    
+    stuffhead: undefined,
+    externalcss: undefined,
+    externaljs: undefined,
+    
     timeout: undefined,
     preview: undefined,
     delay: 3000,
@@ -109,34 +169,48 @@ const CodeBit = {
             }
         })
         
-        this.intializeContent()
+        this.stuffhead = document.getElementById('stuffheadhidden').innerHTML || ""
+        this.externalcss = document.getElementById('externalcsshidden').innerHTML || ""
+        this.externaljs = document.getElementById('externaljshidden').innerHTML || ""
+        
         this.updateContent()
     },
     
-    intializeContent: function() {
+    updateContent: function() {
         var doc = this.preview.contentWindow.document
         doc.open()
+        
+        // prepare js
+        let scriptsrender = "";
+        if(this.externaljs != '') {
+            const scripts = this.externaljs.split('\n');
+            for(let k in scripts) {
+                scriptsrender += '<script src="' + scripts[k] + '"></script>';
+            }
+        }
+        
+        // prepare css
+        let stylesrender = "";
+        if(this.externalcss != '') {
+            const styles = this.externalcss.split('\n');
+            for(let k in styles) {
+                stylesrender += '<link rel="stylesheet" href="' + styles[k] + '">';
+            }
+        }
+        
         doc.write('<html>\
             <head>\
                 <meta charset="utf-8">\
-                <style></style>\
-                <script></script>\
+                ' + scriptsrender + '\
+                ' + stylesrender + '\
+                <script>' + this.jseditor.getValue() + '</script>\
+                <style>' + this.csseditor.getValue() + '</style>\
             </head>\
-            <body></body>\
+            <body>\
+                ' + this.htmleditor.getValue() + '\
+            </body>\
         </html>')
         doc.close()
-    },
-    
-    updateContent: function() {
-        if(this.preview.contentDocument.querySelector('body').innerHTML != this.htmleditor.getValue()) {
-            this.preview.contentDocument.querySelector('body').innerHTML = this.htmleditor.getValue()
-        }
-        if(this.preview.contentDocument.querySelector('head style').innerHTML != this.csseditor.getValue()) {
-            this.preview.contentDocument.querySelector('head style').innerHTML = this.csseditor.getValue()
-        }
-        if(this.preview.contentDocument.querySelector('head script').innerHTML != this.jseditor.getValue()) {
-            this.preview.contentDocument.querySelector('head script').innerHTML = this.jseditor.getValue()
-        }
     },
     
     saveBit: function() {
@@ -147,8 +221,11 @@ const CodeBit = {
             'id' : window.location.search.replace('?', '').split('=')[1] || '',
             'json' : JSON.stringify({
                 'title': document.getElementById('title').value,
-                'editorconfig': document.getElementById('editors').attributes.class.value.split(' ')[1] || ''
-            })
+                'editorconfig': document.getElementById('editors').attributes.class.value.split(' ')[1] || '',
+                'stuffhead': this.stuffhead,
+                'externalcss': this.externalcss,
+                'externaljs': this.externaljs
+            }),
         }
         
         postRequest('save.php', json, function(res, err){
